@@ -120,6 +120,8 @@ module Concrete_i32 : sig
 
   val of_int : Int.t -> t
 
+  val to_int : t -> Int.t
+
   val of_int32 : Int32.t -> t
 
   val add : t -> t -> t
@@ -156,6 +158,8 @@ module Concrete_f32 : sig
 
   val of_float : float -> t
 
+  val to_float : t -> float
+
   val pp : t Fmt.t
 end
 
@@ -163,6 +167,8 @@ module Concrete_f64 : sig
   type t
 
   val of_float : float -> t
+
+  val to_float : t -> float
 
   val pp : t Fmt.t
 end
@@ -833,6 +839,10 @@ module Concrete_extern_func : sig
 
     val i64 : (lr, elt, Concrete_i64.t) t
 
+    val f32 : (lr, elt, Concrete_f32.t) t
+
+    val f64 : (lr, elt, Concrete_f64.t) t
+
     val unit : (lr, unit, unit) t
 
     val memory : int -> (l, mem, Concrete_memory.t) t
@@ -946,9 +956,21 @@ end
 module Symbolic_i32 : sig
   type t
 
+  val zero : t
+
+  val of_int : Int.t -> t
+
   val add : t -> t -> t
 
+  val sub : t -> t -> t
+
   val lt : t -> t -> Symbolic_boolean.t
+
+  val gt : t -> t -> Symbolic_boolean.t
+
+  val le : t -> t -> Symbolic_boolean.t
+
+  val ge : t -> t -> Symbolic_boolean.t
 
   val pp : t Fmt.t
 
