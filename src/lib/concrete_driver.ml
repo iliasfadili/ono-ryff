@@ -24,7 +24,7 @@ let run ~use_graphical_window ~source_file =
     Kdo.Link.State.empty ()
   in
   let ono_module =
-    if use_graphical_window then Concrete_ono_module.m
+    if use_graphical_window then Graphical_ono_module.m
     else Concrete_ono_module.m
   in
   let link_state =
