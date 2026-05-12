@@ -5,10 +5,21 @@ open Ono_cli
 
 let info = Cmd.info "concrete" ~exits
 
+let use_graphical_window =
+  let doc = "Use a graphical window instead of the terminal output." in
+  Arg.(value & flag & info [ "use-graphical-window" ] ~doc)
+
 let term =
   let open Term.Syntax in
-  let+ () = setup_log and+ source_file = source_file in
-  Ono.Concrete_driver.run ~source_file |> function
+  let+ () = setup_log
+  and+ use_graphical_window = use_graphical_window
+  and+ source_file = source_file in
+  let result =
+    Ono.Concrete_driver.run
+      ~use_graphical_window:use_graphical_window
+      ~source_file:source_file
+  in
+  match result with
   | Ok () -> Ok ()
   | Error e -> Error (`Msg (Kdo.R.err_to_string e))
 
