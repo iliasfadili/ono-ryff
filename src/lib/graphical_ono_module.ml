@@ -2,10 +2,10 @@ type extern_func = Kdo.Concrete.Extern_func.extern_func
 
 module R = Raylib
 
-let cell_size = 35
-let margin = 20
-let window_width = 500
-let window_height = 500
+let cell_size = 50
+let margin = 40
+let window_width = 600
+let window_height = 600
 
 let window_ready = ref false
 
@@ -15,8 +15,11 @@ let grid = ref []
 let ensure_window_ready () =
   if not !window_ready then begin
     R.init_window window_width window_height "Graphical Ono Module";
-    R.set_target_fps 60;
     window_ready := true
+  end;
+  if R.window_should_close () then begin
+    R.close_window ();
+    exit 0
   end
 
 let print_cell (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -41,8 +44,11 @@ let clear_screen () : (unit, _) Result.t =
         (fun col_idx alive ->
           let x = margin + (col_idx * cell_size) in
           let y = margin + (row_idx * cell_size) in
-          if alive then
-            R.draw_rectangle x y cell_size cell_size R.Color.darkgray)
+          let color =
+            if alive then R.Color.darkgray else R.Color.lightgray
+          in
+          R.draw_rectangle x y cell_size cell_size color;
+          R.draw_rectangle_lines x y cell_size cell_size R.Color.gray)
         row)
     (List.rev !grid);
 
