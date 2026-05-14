@@ -11,11 +11,9 @@ let print_i64 (n : Kdo.Concrete.I64.t) : (unit, _) Result.t =
   Ok ()
 
 let random_i32 () : (Kdo.Concrete.I32.t, _) Result.t =
-  Random.self_init ();
   Ok (Kdo.Concrete.I32.of_int32 (Random.int32 Int32.max_int))
 
 let random_i32_under (n : Kdo.Concrete.I32.t) : (Kdo.Concrete.I32.t, _) Result.t =
-  Random.self_init ();
   Ok (Kdo.Concrete.I32.of_int (Random.int (Kdo.Concrete.I32.to_int n)))
 
 let sleep (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -36,6 +34,11 @@ let clear_screen () : (unit, _) Result.t =
   print_newline ();
   Buffer.clear buf;
   Ok ()
+
+let init_random seed =
+  match seed with
+  | Some seed -> Random.init seed
+  | None -> Random.self_init ()
 
 let m =
   let open Kdo.Concrete.Extern_func in
