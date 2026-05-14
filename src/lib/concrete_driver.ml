@@ -1,7 +1,8 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~use_graphical_window ~source_file =
+let run ~use_graphical_window ~seed ~source_file =
+  Concrete_ono_module.init_random seed;
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
   let* wat_module = Kdo.Parse.Wat.Module.from_file source_file in

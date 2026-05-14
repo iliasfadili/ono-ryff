@@ -4,11 +4,18 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [OPTION]… FILE
+         ono concrete [--seed=SEED] [--use-graphical-window] [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
+  
+  OPTIONS
+         --seed=SEED
+             Seed used to initialize the random generator.
+  
+         --use-graphical-window
+             Use a graphical window instead of the terminal output.
   
   COMMON OPTIONS
          --color=WHEN (absent=auto)
