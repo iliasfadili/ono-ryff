@@ -11,7 +11,7 @@
 
 - La grille est stockée dans la mémoire linéaire Wasm.
 - Les cellules sont mises à jour selon les règles classiques :
-  - une cellule vivante survit avec 2 ou 3 voisins ;
+  - une cellule vivante survit avec 2 ou 3 voisins
   - une cellule morte naît avec exactement 3 voisins.
 - Ajout d’une démo planeur pour vérifier visuellement le comportement.
 
@@ -29,10 +29,10 @@
 - Les contraintes sont transformées en `unreachable` volontaire pour obtenir un modèle avec `ono symbolic`.
 
 Contraintes réalisées :
-- centre vivant au tour suivant ;
-- centre mort qui naît au tour suivant ;
-- ligne du milieu vivante au tour suivant ;
-- oscillateur de période 2.
+- centre vivant au tour suivant
+- centre mort qui naît au tour suivant
+- ligne du milieu vivante au tour suivant
+- oscillateur de période 2
 
 ## Limites
 
