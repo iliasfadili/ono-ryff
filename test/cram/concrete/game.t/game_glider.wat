@@ -20,34 +20,34 @@
         (local.get $j)))
   )
 
-  (func $initialize_grid ;; Initialisation de la grille
+  (func $initialize_grid
     (local $i i32) (local $j i32)
+
+    ;; On vide toute la grille 10x10
     (local.set $i (i32.const 0))
-    (loop $init_loop_i  ;; Boucle i
+    (loop $clear_loop_i
       (local.set $j (i32.const 0))
-      (loop $init_loop_j  ;; Boucle j
-        
-        (call $random_i32_under (i32.const 100))
-        i32.const 90
-        i32.gt_s
-        (if (then  ;; Créé une vie si le random (de 0 à 100) est supérieur à 90
-          (i32.store
-            (call $get_addr (local.get $i) (local.get $j))
-            (i32.const 1))
-        ) (else
-          (i32.store
-            (call $get_addr (local.get $i) (local.get $j))
-            (i32.const 0))
-        ))
-  
+      (loop $clear_loop_j
+        (i32.store
+          (call $get_addr (local.get $i) (local.get $j))
+          (i32.const 0))
+
         (local.set $j (i32.add (local.get $j) (i32.const 1)))
         (i32.lt_s (local.get $j) (global.get $w))
-        br_if $init_loop_j ;; Fin de boucle j
+        br_if $clear_loop_j
       )
+
       (local.set $i (i32.add (local.get $i) (i32.const 1)))
       (i32.lt_s (local.get $i) (global.get $h))
-      br_if $init_loop_i ;; Fin de boucle i
+      br_if $clear_loop_i
     )
+
+
+    (i32.store (call $get_addr (i32.const 1) (i32.const 2)) (i32.const 1))
+    (i32.store (call $get_addr (i32.const 2) (i32.const 3)) (i32.const 1))
+    (i32.store (call $get_addr (i32.const 3) (i32.const 1)) (i32.const 1))
+    (i32.store (call $get_addr (i32.const 3) (i32.const 2)) (i32.const 1))
+    (i32.store (call $get_addr (i32.const 3) (i32.const 3)) (i32.const 1))
   )
 
   (func $is_alive (param $i i32) (param $j i32) (result i32)  ;; Teste si la case (i,j) est en vie
@@ -120,13 +120,14 @@
       (loop $init_loop_j
         
         (local.set $an (i32.load
-          (local.set $alive
-            (call $is_alive (local.get $i) (local.get $j)))
           (i32.add
             (call $get_addr (local.get $i) (local.get $j))
             (i32.mul
               (i32.const 5)
               (i32.mul (global.get $h) (global.get $w))))))
+
+      (local.set $alive
+        (call $is_alive (local.get $i) (local.get $j)))
         (i32.store
           (call $get_addr (local.get $i) (local.get $j))
           (if (result i32)
