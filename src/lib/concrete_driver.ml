@@ -1,6 +1,24 @@
+(** Concrete execution driver for Ono.
+
+    This module is responsible for the full concrete execution pipeline:
+    parsing a WebAssembly text file, compiling it to Wasm, validating it,
+    linking it with the host [ono] module, and interpreting it. *)
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
+(** Run a WebAssembly module in concrete mode.
+
+    [run ~use_graphical_window ~seed ~steps ~display_last ~source_file]
+    loads [source_file], links it with the concrete host functions, and
+    executes it.
+
+    If [use_graphical_window] is [true], the graphical host module is used.
+    Otherwise, the terminal-based host module is used.
+
+    [seed] controls the random generator used by host functions.
+    [steps], when provided, limits the number of Game of Life iterations.
+    [display_last], when provided, displays only the last configurations. *)
+    
 let run ~use_graphical_window ~seed ~steps ~display_last ~source_file =
   Concrete_ono_module.init_random seed;
   (* Parsing. *)
