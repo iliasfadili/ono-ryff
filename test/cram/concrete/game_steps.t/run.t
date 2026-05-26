@@ -1,0 +1,1 @@
+  $ ono concrete --seed 42 --steps 5 --display-last 3 ../game.t/game.wat
