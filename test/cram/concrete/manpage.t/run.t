@@ -4,15 +4,21 @@ Test the output of the man page:
          ono-concrete
   
   SYNOPSIS
-         ono concrete [--seed=SEED] [--use-graphical-window] [OPTION]… FILE
+         ono concrete [OPTION]… FILE
   
   ARGUMENTS
          FILE (required)
              Source file to analyze.
   
   OPTIONS
+         --display-last=N
+             Display only the last N steps of the Game of Life.
+  
          --seed=SEED
              Seed used to initialize the random generator.
+  
+         --steps=N
+             Run only N steps of the Game of Life.
   
          --use-graphical-window
              Use a graphical window instead of the terminal output.

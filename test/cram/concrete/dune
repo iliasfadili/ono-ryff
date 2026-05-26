@@ -1,2 +1,4 @@
 (cram
- (deps %{bin:ono}))
+ (deps
+  %{bin:ono}
+  (glob_files_rec *.wat)))
