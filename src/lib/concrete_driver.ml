@@ -1,7 +1,7 @@
 open Syntax
 module Interpret = Kdo.Interpret.Concrete (Kdo.Interpret.Default_parameters)
 
-let run ~use_graphical_window ~seed ~source_file =
+let run ~use_graphical_window ~seed ~steps ~source_file =
   Concrete_ono_module.init_random seed;
   (* Parsing. *)
   Logs.info (fun m -> m "Parsing file %a..." Fpath.pp source_file);
@@ -25,8 +25,14 @@ let run ~use_graphical_window ~seed ~source_file =
     Kdo.Link.State.empty ()
   in
   let ono_module =
-    if use_graphical_window then Graphical_ono_module.m
-    else Concrete_ono_module.m
+    if use_graphical_window then begin
+      Graphical_ono_module.configure ~steps;
+      Graphical_ono_module.m
+    end
+    else begin
+      Concrete_ono_module.configure ~steps;
+      Concrete_ono_module.m
+    end
   in
   let link_state =
     Kdo.Link.Extern.modul ono_module link_state ~name:"ono"

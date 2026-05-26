@@ -12,6 +12,12 @@ let window_ready = ref false
 let current_row = ref []
 let grid = ref []
 
+let steps = ref None
+let generation = ref 0
+let configure ~steps:s =
+  steps := s;
+  generation := 0
+
 let ensure_window_ready () =
   if not !window_ready then begin
     R.init_window window_width window_height "Graphical Ono Module";
@@ -56,6 +62,7 @@ let clear_screen () : (unit, _) Result.t =
 
   grid := [];
   current_row := [];
+  incr generation;
 
   Ok ()
 
@@ -79,6 +86,14 @@ let sleep (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
   Unix.sleep (Kdo.Concrete.I32.to_int n);
   Ok ()
 
+let should_continue () : (Kdo.Concrete.I32.t, _) Result.t =
+  let continue =
+    match !steps with
+    | None -> true
+    | Some n -> !generation < n
+  in
+  Ok (Kdo.Concrete.I32.of_int (if continue then 1 else 0))
+
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -91,6 +106,7 @@ let m =
     ; ("print_cell", Extern_func (i32 ^->. unit, print_cell))
     ; ("newline", Extern_func (unit ^->. unit, newline))
     ; ("clear_screen", Extern_func (unit ^->. unit, clear_screen))
+    ; ("should_continue", Extern_func (unit ^->. i32, should_continue))
     ]
   in
   {

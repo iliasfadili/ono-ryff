@@ -5,6 +5,7 @@
   (func $print_cell (import "ono" "print_cell") (param i32))
   (func $newline (import "ono" "newline"))
   (func $clear_screen (import "ono" "clear_screen"))
+  (func $should_continue (import "ono" "should_continue") (result i32))
 
   (global $w i32 (i32.const 10))
   (global $h i32 (i32.const 10))
@@ -170,12 +171,17 @@
     call $clear_screen
   )
 
-  (func $loop ;; Boucle du jeu
-    call $print_grid
-    (call $sleep (i32.const 2))
-    call $step
-    call $loop
+  (func $loop
+  (if
+    (call $should_continue)
+    (then
+      call $print_grid
+      (call $sleep (i32.const 2))
+      call $step
+      call $loop
+    )
   )
+)
 
   (func $main
     call $initialize_grid
