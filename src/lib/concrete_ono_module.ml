@@ -4,10 +4,13 @@ let buf = Buffer.create 2048
 
 let steps = ref None
 
+let display_last = ref None
+
 let generation = ref 0
 
-let configure ~steps:s = 
+let configure ~steps:s ~display_last:d = 
   steps := s;
+  display_last := d;
   generation := 0
 
 let print_i32 (n : Kdo.Concrete.I32.t) : (unit, _) Result.t =
@@ -36,12 +39,15 @@ let newline () : (unit, _) Result.t =
   Buffer.add_string buf "\n";
   Ok ()
 
+let next_step () : (unit, _) Result.t =
+  incr generation;
+  Ok ()
+
 let clear_screen () : (unit, _) Result.t =
   Buffer.add_string buf "--------------------|";
   Buffer.output_buffer stdout buf;
   print_newline ();
   Buffer.clear buf;
-  incr generation;
   Ok ()
 
 let init_random seed =
@@ -57,6 +63,15 @@ let should_continue () : (Kdo.Concrete.I32.t, _) Result.t =
   in
   Ok (Kdo.Concrete.I32.of_int (if continue then 1 else 0))
 
+let should_display () : (Kdo.Concrete.I32.t, _) Result.t =
+  let display =
+    match !steps, !display_last with
+    | _, None -> true
+    | None, Some _ -> true
+    | Some total_steps, Some last ->
+        !generation >= total_steps - last
+  in
+  Ok (Kdo.Concrete.I32.of_int (if display then 1 else 0))
 let m =
   let open Kdo.Concrete.Extern_func in
   let open Kdo.Concrete.Extern_func.Syntax in
@@ -68,7 +83,9 @@ let m =
   ("print_cell", Extern_func (i32 ^->. unit, print_cell));
   ("newline", Extern_func (unit ^->. unit, newline));
   ("clear_screen", Extern_func (unit ^->. unit, clear_screen));
-  ("should_continue", Extern_func (unit ^->. i32, should_continue));  ] in
+  ("should_continue", Extern_func (unit ^->. i32, should_continue));
+  ("should_display", Extern_func (unit ^->. i32, should_display));
+  ("next_step", Extern_func (unit ^->. unit, next_step)); ] in
   {
     Kdo.Extern.Module.functions;
     func_type = Kdo.Concrete.Extern_func.extern_type;

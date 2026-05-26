@@ -14,8 +14,10 @@ let grid = ref []
 
 let steps = ref None
 let generation = ref 0
-let configure ~steps:s =
+let display_last = ref None
+let configure ~steps:s ~display_last:d =
   steps := s;
+  display_last := d;
   generation := 0
 
 let ensure_window_ready () =
@@ -62,7 +64,6 @@ let clear_screen () : (unit, _) Result.t =
 
   grid := [];
   current_row := [];
-  incr generation;
 
   Ok ()
 
@@ -93,6 +94,20 @@ let should_continue () : (Kdo.Concrete.I32.t, _) Result.t =
     | Some n -> !generation < n
   in
   Ok (Kdo.Concrete.I32.of_int (if continue then 1 else 0))
+  
+let should_display () : (Kdo.Concrete.I32.t, _) Result.t =
+  let display =
+    match !steps, !display_last with
+    | _, None -> true
+    | None, Some _ -> true
+    | Some total_steps, Some last ->
+        !generation >= total_steps - last
+  in
+  Ok (Kdo.Concrete.I32.of_int (if display then 1 else 0))
+
+let next_step () : (unit, _) Result.t =
+  incr generation;
+  Ok ()
 
 let m =
   let open Kdo.Concrete.Extern_func in
@@ -107,6 +122,8 @@ let m =
     ; ("newline", Extern_func (unit ^->. unit, newline))
     ; ("clear_screen", Extern_func (unit ^->. unit, clear_screen))
     ; ("should_continue", Extern_func (unit ^->. i32, should_continue))
+    ; ("should_display", Extern_func (unit ^->. i32, should_display))
+    ; ("next_step", Extern_func (unit ^->. unit, next_step))
     ]
   in
   {

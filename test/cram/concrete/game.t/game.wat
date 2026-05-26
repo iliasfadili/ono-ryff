@@ -6,6 +6,8 @@
   (func $newline (import "ono" "newline"))
   (func $clear_screen (import "ono" "clear_screen"))
   (func $should_continue (import "ono" "should_continue") (result i32))
+  (func $should_display (import "ono" "should_display") (result i32))
+  (func $next_step (import "ono" "next_step"))
 
   (global $w i32 (i32.const 10))
   (global $h i32 (i32.const 10))
@@ -175,9 +177,15 @@
   (if
     (call $should_continue)
     (then
-      call $print_grid
+      (if
+        (call $should_display)
+        (then
+          call $print_grid
+        )
+      )
       (call $sleep (i32.const 2))
       call $step
+      call $next_step
       call $loop
     )
   )
