@@ -5,6 +5,7 @@
 - Ajout des préliminaires concrets.
 - Ajout de `print_i64`.
 - Ajout de `random_i32` avec option `--seed` pour rendre les tests déterministes.
+- Ajout de 'read_32'
 - Correction de la règle de mise à jour du jeu de la vie.
 
 ## Jeu de la vie
@@ -59,7 +60,14 @@ dune runtest
 ```bash
 dune runtest test/cram/concrete/game.t
 ```
-
+### Lancer les tests pour les differentes options
+- Steps N :
+  dune exec ono -- concrete --steps 5 test/cram/concrete/game.t/game.wat
+- Display last N :
+  dune exec ono -- concrete --steps 5 test/cram/concrete/game.t/game.wat
+  - ajouter --seed 42 pour comparer le display_last n et le steps n 
+  dune runtest test/cram/concrete/game_steps.t (résultat déjà présent dans le fichier)
+  
 ### Lancer les tests de génération symbolique
 
 ```bash
@@ -110,6 +118,11 @@ Oscillateur de période 2 :
 
 ```bash
 dune exec -- ono symbolic test/cram/symbolic/life_config.t/oscillator_period_2.wat
+```
+Polynomial :
+Insérer à la main un par un a b c d 
+```bash
+dune exec ono -- symbolic test/cram/symbolic/polynomial.t/polynomial.wat
 ```
 
 Ces commandes déclenchent volontairement `unreachable` lorsque la contrainte est satisfaite. Le moteur symbolique affiche alors un `model`, qui correspond à une configuration initiale trouvée par le solveur.
